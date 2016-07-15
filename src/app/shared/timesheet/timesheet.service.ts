@@ -17,14 +17,13 @@ export class TimesheetService {
       .catch(this.handleError);
   }
 
-  private extractData(res: Response) : Timesheet[] {
+  private extractData(res: Response): Timesheet[] {
       let body = res.json();
       let timesheets = Object.keys(body.results.timesheets).map(function(timesheetId) {
         return body.results.timesheets[timesheetId];
       }).map(timesheet => {
         return new Timesheet(timesheet);
       });
-      console.log(timesheets);
       return timesheets;
   }
 

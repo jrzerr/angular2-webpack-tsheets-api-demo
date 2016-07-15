@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, ROUTER_DIRECTIVES, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { TimesheetService, Timesheet } from '../shared';
 import { TimesheetComponent } from  '../timesheet';
@@ -17,7 +17,6 @@ export class ListComponent implements OnInit, OnDestroy {
   public $timesheets: Observable<Timesheet[]>;
   public errorMessage: any;
   public selectedId: number;
-  
   constructor(
     private route: ActivatedRoute,
     private router: Router,

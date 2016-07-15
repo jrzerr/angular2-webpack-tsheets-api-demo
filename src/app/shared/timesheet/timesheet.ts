@@ -4,15 +4,14 @@ export class Timesheet {
     jobcode_id: number;
     locked: boolean;
     notes: string;
-    created: string;
-    last_modified: string;
+    created: Date;
+    last_modified: Date;
     type: string;
     on_the_clock: boolean;
     start: Date;
     end: Date;
     date: Date;
     duration: number;
-    
     constructor(ts: any = {
         id: 0,
         user_id: 0,
@@ -23,9 +22,9 @@ export class Timesheet {
         last_modified: '',
         type: 'regular',
         on_the_clock: false,
-        start: undefined,
-        end: undefined,
-        date: undefined,
+        start: '',
+        end: '',
+        date: '',
         duration: 0,
     }) {
         this.id = ts.id;
@@ -33,13 +32,40 @@ export class Timesheet {
         this.jobcode_id = ts.jobcode_id;
         this.locked = ts.locked;
         this.notes = ts.notes;
-        this.created = ts.created;
-        this.last_modified = ts.last_modified;
+
+        if (ts.created) {
+            this.created = new Date(ts.created);
+        } else {
+            this.created = undefined;
+        }
+
+        if (ts.last_modified) {
+            this.last_modified = new Date(ts.last_modified);
+        } else {
+            this.last_modified = undefined;
+        }
+
         this.type = ts.type;
         this.on_the_clock = ts.on_the_clock;
-        this.start = ts.start;
-        this.end = ts.end;
-        this.date = ts.date;
-        this.duration = ts.duration;
+        if (ts.start) {
+            this.start = new Date(ts.start);
+        } else {
+            this.start = undefined;
+        }
+        if (ts.end) {
+            this.end = new Date(ts.end);
+        } else {
+            this.end = undefined;
+        }
+        if (ts.date) {
+            this.date = new Date(ts.date);
+        } else {
+            this.date = undefined;
+        }
+        if (ts.duration) {
+            this.duration = ts.duration;
+        } else {
+            this.duration = 0;
+        }
     }
 }
