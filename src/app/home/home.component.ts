@@ -1,18 +1,27 @@
 import { Component, OnInit } from '@angular/core';
+import { TimesheetService, Timesheet } from '../shared';
 
 @Component({
   selector: 'my-home',
+  providers: [TimesheetService],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
 
-  constructor() {
+    timesheets: Timesheet[];
+    errorMessage: any;
+
+  constructor(private timesheetService: TimesheetService) {
     // Do stuff
   }
 
   ngOnInit() {
     console.log('Hello Home');
+    this.timesheetService.getTimesheets()
+        .subscribe(
+        timesheets => this.timesheets = timesheets,
+        error => this.errorMessage = <any>error);
   }
 
 }
