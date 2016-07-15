@@ -8,7 +8,7 @@ import { BaseRequestOptions, Http } from '@angular/http';
 import { MockBackend } from '@angular/http/testing';
 
 // Load the implementations that should be tested
-import { ApiService } from './shared';
+
 import { AppComponent } from './app.component';
 
 describe('App', () => {
@@ -16,7 +16,6 @@ describe('App', () => {
   beforeEach(() => {
     addProviders([
       AppComponent,
-      ApiService,
       BaseRequestOptions,
       MockBackend,
       // Provide a mocked (fake) backend for Http
@@ -31,7 +30,6 @@ describe('App', () => {
   });
 
   it('should have an url', inject([AppComponent], (app: AppComponent) => {
-    expect(app.url).toEqual('https://github.com/preboot/angular2-webpack');
   }));
 
 });
