@@ -57,7 +57,7 @@
         "type": "regular",
         "on_the_clock": true,
         "start": "2013-07-14T08:00:00-06:00",
-        "end": null,
+        "end": "",
         "date": "2013-07-14",
         "duration": null
       }

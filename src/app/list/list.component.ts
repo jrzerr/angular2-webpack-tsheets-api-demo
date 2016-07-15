@@ -2,17 +2,19 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, ROUTER_DIRECTIVES, Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { TimesheetService, Timesheet } from '../shared';
+import { TimesheetComponent } from  '../timesheet';
 
 @Component({
   selector: 'ts-list',
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss'],
   providers: [TimesheetService],
+  directives: [TimesheetComponent],
 })
 export class ListComponent implements OnInit, OnDestroy {
 
   private paramsSub: Subscription;
-  public timesheets: Timesheet[];
+  public $timesheets: Observable<Timesheet[]>;
   public errorMessage: any;
   public selectedId: number;
   
@@ -39,10 +41,7 @@ export class ListComponent implements OnInit, OnDestroy {
       console.log(params);
     });
 
-    this.timesheetService.getTimesheets()
-        .subscribe(
-        timesheets => this.timesheets = timesheets,
-        error => this.errorMessage = <any>error);
+    this.$timesheets = this.timesheetService.getTimesheets();
   }
 
   ngOnDestroy() {
