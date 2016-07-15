@@ -3,9 +3,26 @@ import { Timesheet } from '../shared';
 
 @Pipe({ name: 'tsSecondsToHours'})
 export class SecondsToHoursPipe implements PipeTransform {
-  transform(seconds: number): string {
-    console.log(seconds / 360);
-    return '50:00';
+  transform(sec_num: number): string {
+    const hours   = Math.floor(sec_num / 3600);
+    const minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+    const seconds = sec_num - (hours * 3600) - (minutes * 60);
+
+    let hours_str = hours.toString();
+    let minutes_str = minutes.toString();
+    let seconds_str = seconds.toString();
+
+    if (hours   < 10) {
+      hours_str = '0' + hours;
+    }
+    if (minutes < 10) {
+      minutes_str = '0' + minutes;
+    }
+    if (seconds < 10) {
+      seconds_str = '0' + seconds;
+    }
+
+    return hours_str + ':' + minutes_str + ':' + seconds_str;
   }
 }
 
