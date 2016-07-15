@@ -1,3 +1,9 @@
 <div>
   LIST
+  <div>
+    {{ selectedId }}
+  </div>
+  <div *ngFor="let timesheet of timesheets">
+    <button (click)="selectTimesheet(timesheet.id)">{{ timesheet.id }}</button>
+  </div>
 </div>
