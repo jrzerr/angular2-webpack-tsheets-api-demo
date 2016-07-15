@@ -10,7 +10,7 @@ import '../style/app.scss';
  * Top Level Component
  */
 @Component({
-  selector: 'my-app', // <my-app></my-app>
+  selector: 'ts-app', // <my-app></my-app>
   providers: [ApiService],
   directives: [...ROUTER_DIRECTIVES],
   templateUrl: './app.component.html',

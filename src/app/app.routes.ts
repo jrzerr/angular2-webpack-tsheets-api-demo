@@ -1,11 +1,11 @@
 import { provideRouter, RouterConfig } from '@angular/router';
 
-import { HomeComponent } from './home';
-import { AboutComponent } from './about';
+import { ListComponent } from './list';
+import { TimecardComponent } from './timecard';
 
 export const routes: RouterConfig = [
-  { path: '', component: HomeComponent },
-  { path: 'about', component: AboutComponent}
+  { path: '', component: TimecardComponent },
+  { path: 'list', component: ListComponent }
 ];
 
 export const APP_ROUTER_PROVIDERS = [
