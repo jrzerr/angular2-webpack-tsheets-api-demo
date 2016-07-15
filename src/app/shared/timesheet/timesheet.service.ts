@@ -2,14 +2,14 @@ import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 
 import { Timesheet } from './timesheet';
-//import { TIMESHEETS } from './mock-timesheets';
+// import { TIMESHEETS } from './mock-timesheets';
 import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class TimesheetService {
-  constructor (private http: Http) {}
+  private timesheetsUrl = 'timesheets.json';
 
-  private timesheetsUrl = 'app/timesheets.json';
+  constructor (private http: Http) {}
 
   getTimesheets(): Observable<Timesheet[]> {
       return this.http.get(this.timesheetsUrl)
@@ -19,7 +19,10 @@ export class TimesheetService {
 
   private extractData(res: Response) {
       let body = res.json();
-      return body.data || {};
+      let timesheets = Object.keys(body.results.timesheets).map(function(timesheetId) {
+        return body.results.timesheets[timesheetId];
+      });
+      return timesheets;
   }
 
   private handleError (error: any) {
