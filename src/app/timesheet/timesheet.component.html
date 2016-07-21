@@ -1,16 +1,21 @@
 <div class="timesheet-component-container">
-  <div class="timesheet-component-title">{{ timesheet.id }}</div>
-  <div class="timesheet-component-details">
-    <div class="timesheet-component-time" [ngSwitch]="timesheet.type">
-      <div *ngSwitchCase="'regular'">
-        {{ timesheet.start }}
-        <span *ngIf="timesheet.on_the_clock === false">
-          {{ timesheet.end }}
-        </span>
-      </div>
-      <div *ngSwitchCase="'manual'">
-        {{ timesheet.duration | tsSecondsToHours }}
+  <div class="timesheets-component-collapsed" *ngIf="selected === false">
+    <div class="timesheet-component-title">{{ timesheet.id }}</div>
+    <div class="timesheet-component-details">
+      <div class="timesheet-component-time" [ngSwitch]="timesheet.type">
+        <div *ngSwitchCase="'regular'">
+          {{ timesheet.start }}
+          <span *ngIf="timesheet.on_the_clock === false">
+            {{ timesheet.end }}
+          </span>
+        </div>
+        <div *ngSwitchCase="'manual'">
+          {{ timesheet.duration | tsSecondsToHours }}
+        </div>
       </div>
     </div>
+  </div>
+  <div class="timesheet-component-expanded" *ngIf="selected === true">
+    EXPANDED
   </div>
 </div>
