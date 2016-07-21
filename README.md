@@ -1,3 +1,12 @@
+## Zerrtech instructions
+
+Create a .env file in the project root that has configuration parameters:
+
+* API_URL=http://127.0.0.1:8080
+* ACCESS_TOKEN=blahblahblah
+
+Then within the app you can access them via `process.env.API_URL` anywhere without doing imports or anything.
+
 # angular2-webpack
 
 [![Dependency Status](https://david-dm.org/preboot/angular2-webpack/status.svg)](https://david-dm.org/preboot/angular2-webpack#info=dependencies) [![devDependency Status](https://david-dm.org/preboot/angular2-webpack/dev-status.svg)](https://david-dm.org/preboot/angular2-webpack#info=devDependencies)

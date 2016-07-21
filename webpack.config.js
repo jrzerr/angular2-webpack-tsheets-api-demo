@@ -8,7 +8,7 @@ var autoprefixer = require('autoprefixer');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
-
+require('dotenv').config();
 /**
  * Env
  * Get npm lifecycle event to identify the environment
@@ -157,7 +157,9 @@ module.exports = function makeWebpackConfig() {
     new webpack.DefinePlugin({
       // Environment helpers
       'process.env': {
-        ENV: JSON.stringify(ENV)
+        ENV: JSON.stringify(ENV),
+        ACCESS_TOKEN: JSON.stringify(process.env.ACCESS_TOKEN),
+        API_URL: JSON.stringify(process.env.API_URL)
       }
     })
   ];

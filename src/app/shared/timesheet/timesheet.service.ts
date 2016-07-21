@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Response } from '@angular/http';
+import { Http, Response, Headers } from '@angular/http';
 
 import { Timesheet } from './timesheet';
 // import { TIMESHEETS } from './mock-timesheets';
@@ -7,12 +7,15 @@ import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class TimesheetService {
-  private timesheetsUrl = 'timesheets.json';
+
+  private timesheetsUrl = process.env.API_URL + '/api/v1/timesheets?start_date=2016-07-01&end_date=2016-07-15';
 
   constructor (private http: Http) {}
 
   getTimesheets(): Observable<Timesheet[]> {
-      return this.http.get(this.timesheetsUrl)
+    let headers = new Headers();
+    headers.set('Authorization', 'Bearer ' + process.env.ACCESS_TOKEN);
+    return this.http.get(this.timesheetsUrl, { headers: headers })
       .map(this.extractData)
       .catch(this.handleError);
   }
