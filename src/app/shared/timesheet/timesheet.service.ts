@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
+import { DATE_FORMAT_STRING_LONG, DATE_FORMAT_STRING_SHORT } from '../time-helpers';
+import * as moment from 'moment'
 
 import { Timesheet } from './timesheet';
 // import { TIMESHEETS } from './mock-timesheets';
@@ -50,13 +52,12 @@ export class TimesheetService {
     delete timesheet_copy.last_modified;
     
     if (timesheet_copy.date !== undefined) {
-      timesheet_copy.date = new DatePipe().transform(timesheet_copy.date, 'yyyy-MM-dd');
+      timesheet_copy.date = moment(timesheet_copy.date).format(DATE_FORMAT_STRING_SHORT);
     }
 
     if (timesheet_copy.start !== undefined) {
-      timesheet_copy.start = new DatePipe().transform(timesheet_copy.start, 'yyyy-MM-ddThh:mm:ssz');
+      timesheet_copy.start = moment(timesheet_copy.start).format(DATE_FORMAT_STRING_LONG);
     }
-
     console.log(timesheet_copy);
     return timesheet;
   }

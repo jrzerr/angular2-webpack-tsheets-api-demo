@@ -24,3 +24,6 @@ export class SecondsToHoursPipe implements PipeTransform {
     return hours_str + ':' + minutes_str + ':' + seconds_str;
   }
 }
+
+export const DATE_FORMAT_STRING_LONG = '2013-08-08T15:00:00-06:00';
+export const DATE_FORMAT_STRING_SHORT = 'YYYY-MM-DD';
