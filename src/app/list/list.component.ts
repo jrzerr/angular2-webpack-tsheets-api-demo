@@ -1,4 +1,14 @@
-import { Component, OnInit, OnDestroy, ElementRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ElementRef,
+  trigger,
+  state,
+  style,
+  transition,
+  animate
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { TimesheetService, Timesheet } from '../shared';
@@ -10,6 +20,22 @@ import { TimesheetComponent } from  '../timesheet';
   styleUrls: ['./list.component.scss'],
   providers: [TimesheetService],
   directives: [TimesheetComponent],
+  animations: [
+    trigger('timesheetState', [
+      // state('selected', style({
+      //   borderColor: '#ff0'
+      // })),
+      // state('notselected', style({
+      //   borderColor: '#fff'
+      // })),
+      // transition('notselected => selected', animate('500ms ease-in')),
+      // transition('selected => notselected', animate('500ms ease-out')),
+      transition('void => *', [
+        style({ opacity: '0' }),
+        animate('500ms ease-in', style({ opacity: '1' }))
+        ]),
+    ])
+  ]
 })
 export class ListComponent implements OnInit, OnDestroy {
 
