@@ -7,6 +7,10 @@ Create a .env file in the project root that has configuration parameters:
 
 Then within the app you can access them via `process.env.API_URL` anywhere without doing imports or anything.
 
+API_URL is the url to a server that will forward requests to the TSheets API that is not CORS enabled
+
+ACCESS_TOKEN is a one off access token that you create within the TSheets web dashboard in the API section
+
 # angular2-webpack
 
 [![Dependency Status](https://david-dm.org/preboot/angular2-webpack/status.svg)](https://david-dm.org/preboot/angular2-webpack#info=dependencies) [![devDependency Status](https://david-dm.org/preboot/angular2-webpack/dev-status.svg)](https://david-dm.org/preboot/angular2-webpack#info=devDependencies)
@@ -31,7 +35,10 @@ This seed repo serves as an Angular 2 starter for anyone looking to get up and r
 
 ### Quick start
 
-> Clone/Download the repo then edit `app.ts` inside [`/src/app/app.component.ts`](/src/app/app.component.ts)
+> Clone/Download the repo then edit `app.ts` inside [`/src/app/app.component.ts`](/src/app/app.component.ts) to change the Component selector to match whatever you would like your top
+level component called in the `src/public/index.html` file.
+
+> Get [nvm](https://github.com/creationix/nvm) installed
 
 ```bash
 # clone our repo
@@ -40,8 +47,17 @@ $ git clone https://github.com/preboot/angular2-webpack.git my-app
 # change directory to your app
 $ cd my-app
 
+# use the proper version of nodejs
+$ nvm install
+
 # install the dependencies with npm
 $ npm install
+
+# add a .env file that contains config parameters
+$ touch .env
+# go and add the following contents to the file, see notes in README for what they are for
+API_URL=http://127.0.0.1:8080
+ACCESS_TOKEN=blahblahblah
 
 # start the server
 $ npm start
