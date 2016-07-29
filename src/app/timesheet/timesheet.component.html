@@ -1,5 +1,5 @@
 <div class="timesheet-component-container">
-  <div class="timesheets-component-collapsed" *ngIf="selected === false">
+  <div class="timesheets-component-collapsed" [hidden]="selected === true">
     <div class="timesheet-component-title">{{ timesheet.id }}</div>
     <div class="timesheet-component-details">
       <div class="timesheet-component-time" [ngSwitch]="timesheet.type">
@@ -15,7 +15,7 @@
       </div>
     </div>
   </div>
-  <div class="timesheet-component-expanded" *ngIf="selected === true">
-    EXPANDED
+  <div class="timesheet-component-expanded" [hidden]="selected === false">
+    <ts-timesheet-edit [timesheet]="timesheet" (saveTimesheet)="onSave(timesheet)"></ts-timesheet-edit>
   </div>
 </div>

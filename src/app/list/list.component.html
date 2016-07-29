@@ -1,8 +1,8 @@
 <div>
   LIST
-  <div *ngFor="let timesheet of $timesheets | async" (click)="selectTimesheet(timesheet.id)">
+  <div *ngFor="let timesheet of $timesheets | async" (click)="selectTimesheet(timesheet.id)" [attr.id]="TIMESHEET_ID_PREFIX+ '-' +timesheet.id">
     <ts-timesheet 
       [timesheet]="timesheet"
-      [selected]="selectedId === timesheet.id"></ts-timesheet>
+      [selected]="selectedId === timesheet.id" (saveTimesheet)="onSaveTimesheet(timesheet)"></ts-timesheet>
   </div>
 </div>

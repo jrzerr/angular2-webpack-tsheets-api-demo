@@ -1,27 +1,23 @@
 import { Component, OnInit, Input, Output, OnChanges, OnDestroy, EventEmitter } from '@angular/core';
 import { Timesheet } from '../shared';
-import { TimesheetEditComponent } from '../timesheet-edit';
 import { SecondsToHoursPipe } from '../shared';
 
 @Component({
-  selector: 'ts-timesheet',
-  templateUrl: './timesheet.component.html',
-  styleUrls: ['./timesheet.component.scss'],
+  selector: 'ts-timesheet-edit',
+  templateUrl: './timesheet-edit.component.html',
+  styleUrls: ['./timesheet-edit.component.scss'],
   pipes: [SecondsToHoursPipe],
-  directives: [TimesheetEditComponent]
 })
-export class TimesheetComponent implements OnInit, OnChanges, OnDestroy {
+export class TimesheetEditComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input() timesheet: Timesheet;
-  @Input() selected: boolean;
   @Output() saveTimesheet: EventEmitter<any> = new EventEmitter();
-
   constructor() {
     // Do stuff
   }
 
   ngOnInit() {
-    console.log('Hello Timesheet');
+    console.log('Hello Timesheet Edit');
   }
 
   ngOnChanges() {
@@ -31,7 +27,7 @@ export class TimesheetComponent implements OnInit, OnChanges, OnDestroy {
 
   }
 
-  onSave(timesheet : Timesheet) {
+  onSave(timesheet) {
     this.saveTimesheet.emit(timesheet);
   }
 

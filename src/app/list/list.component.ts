@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { TimesheetService, Timesheet } from '../shared';
@@ -14,14 +14,20 @@ import { TimesheetComponent } from  '../timesheet';
 export class ListComponent implements OnInit, OnDestroy {
 
   private paramsSub: Subscription;
+  private $editTimesheets: Observable<Timesheet[]>;
+  private editSub: Subscription;
   public $timesheets: Observable<Timesheet[]>;
+  public timesheets: Timesheet[];
   public errorMessage: any;
   public selectedId: number;
+  public TIMESHEET_ID_PREFIX: string;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private timesheetService: TimesheetService) {
+    private timesheetService: TimesheetService,
+    private elementRef: ElementRef) {
     // Do stuff
+    this.TIMESHEET_ID_PREFIX = 'timesheet-view';
   }
 
   selectTimesheet(id: number) {
@@ -40,10 +46,24 @@ export class ListComponent implements OnInit, OnDestroy {
       console.log(params);
     });
 
-    this.$timesheets = this.timesheetService.getTimesheets();
+    this.$timesheets = this.timesheetService.getTimesheets()
+      .map(timesheets => {
+        return timesheets.sort((a, b) => {
+          return b.date.getTime() - a.date.getTime();
+        });
+      });
   }
 
   ngOnDestroy() {
     this.paramsSub.unsubscribe();
+  }
+
+  onSaveTimesheet(timesheet : Timesheet) {
+    this.$editTimesheets = this.timesheetService.editTimesheet(timesheet)
+      .map(timesheets => {
+        console.log(timesheets);
+        return timesheets;
+      });
+    // this.editSub = this.$editTimesheets.subscribe();
   }
 }
