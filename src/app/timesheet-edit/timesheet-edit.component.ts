@@ -17,7 +17,6 @@ export class TimesheetEditComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnInit() {
-    console.log('Hello Timesheet Edit');
   }
 
   ngOnChanges() {

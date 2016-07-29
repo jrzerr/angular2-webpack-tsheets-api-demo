@@ -35,7 +35,6 @@ export class ListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    console.log('Hello List');
     this.paramsSub = this.router.routerState.queryParams.subscribe(params => {
       if (params.hasOwnProperty('id')) {
         this.selectedId = +params['id'];

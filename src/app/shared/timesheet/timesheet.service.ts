@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { DatePipe } from '@angular/common';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { DATE_FORMAT_STRING_LONG, DATE_FORMAT_STRING_SHORT } from '../time-helpers';
 import * as moment from 'moment'
 import * as _ from 'lodash';
+import { Store } from '@ngrx/store';
 
 import { Timesheet } from './timesheet';
 // import { TIMESHEETS } from './mock-timesheets';
@@ -14,7 +14,7 @@ export class TimesheetService {
 
   private timesheetsUrl = process.env.API_URL + '/api/v1/timesheets';
 
-  constructor (private http: Http) {}
+  constructor (private http: Http, private _store: Store<any>) {}
   getTimesheetsListUrl(): string {
     const today = new Date();
     const dayString = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
@@ -25,7 +25,10 @@ export class TimesheetService {
   getTimesheets(): Observable<Timesheet[]> {
     let headers = new Headers();
     headers.set('Authorization', 'Bearer ' + process.env.ACCESS_TOKEN);
-
+    this._store.select('timesheets')
+      .subscribe(timesheets => {
+        console.log(timesheets);
+      });
     return this.http.get(this.getTimesheetsListUrl(), { headers: headers })
       .map(this.extractData)
       .catch(this.handleError);
@@ -50,7 +53,7 @@ export class TimesheetService {
   }
 
   timesheetToApiMapper(timesheet: Timesheet): any {
-    let timesheet_copy : any = _.pick(timesheet, ['id', 'date', 'start', 'end', 'jobcode_id', 'notes', 'customfields']);
+    let timesheet_copy: any = _.pick(timesheet, ['id', 'date', 'start', 'end', 'jobcode_id', 'notes', 'customfields']);
 
     if (timesheet_copy.date !== undefined) {
       timesheet_copy.date = moment(timesheet_copy.date).format(DATE_FORMAT_STRING_SHORT);
@@ -74,6 +77,7 @@ export class TimesheetService {
       }).map(timesheet => {
         return new Timesheet(timesheet);
       });
+
       return timesheets;
   }
 
@@ -84,3 +88,23 @@ export class TimesheetService {
     return Observable.throw(errMsg);
   }
 }
+
+
+const initialState = {
+  timesheets: []
+};
+
+export const timesheets = (state = initialState, action) => {
+  switch(action.type) {
+    case 'ADD_TIMESHEET':
+      var state_copy = Object.assign({}, state);
+      state_copy.timesheets.push(action.payload);
+      return state_copy;
+    case 'EDIT_TIMESHEET':
+      return state;
+    case 'DELETE_TIMESHEET':
+      return state;
+    default:
+      return state;
+  }
+};

@@ -21,7 +21,6 @@ export class TimesheetComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnInit() {
-    console.log('Hello Timesheet');
   }
 
   ngOnChanges() {
