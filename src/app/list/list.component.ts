@@ -64,6 +64,7 @@ export class ListComponent implements OnInit, OnDestroy {
         console.log(timesheets);
         return timesheets;
       });
-    // this.editSub = this.$editTimesheets.subscribe();
+    
+    this.editSub = this.$editTimesheets.subscribe();
   }
 }

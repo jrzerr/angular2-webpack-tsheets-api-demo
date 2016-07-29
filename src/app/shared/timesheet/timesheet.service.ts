@@ -3,6 +3,7 @@ import { DatePipe } from '@angular/common';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { DATE_FORMAT_STRING_LONG, DATE_FORMAT_STRING_SHORT } from '../time-helpers';
 import * as moment from 'moment'
+import * as _ from 'lodash';
 
 import { Timesheet } from './timesheet';
 // import { TIMESHEETS } from './mock-timesheets';
@@ -24,6 +25,7 @@ export class TimesheetService {
   getTimesheets(): Observable<Timesheet[]> {
     let headers = new Headers();
     headers.set('Authorization', 'Bearer ' + process.env.ACCESS_TOKEN);
+
     return this.http.get(this.getTimesheetsListUrl(), { headers: headers })
       .map(this.extractData)
       .catch(this.handleError);
@@ -33,9 +35,9 @@ export class TimesheetService {
     let headers = new Headers();
     headers.set('Authorization', 'Bearer ' + process.env.ACCESS_TOKEN);
     let options = new RequestOptions({ headers: headers });
-    console.log(headers);
+
     return this.http.put(this.timesheetsUrl, {
-        data: JSON.stringify(timesheets.map(this.timesheetToApiMapper))
+        data: timesheets.map(this.timesheetToApiMapper)
       }, 
       options
       )
@@ -48,9 +50,8 @@ export class TimesheetService {
   }
 
   timesheetToApiMapper(timesheet: Timesheet): any {
-    let timesheet_copy = Object.assign({}, timesheet);
-    delete timesheet_copy.last_modified;
-    
+    let timesheet_copy : any = _.pick(timesheet, ['id', 'date', 'start', 'end', 'jobcode_id', 'notes', 'customfields']);
+
     if (timesheet_copy.date !== undefined) {
       timesheet_copy.date = moment(timesheet_copy.date).format(DATE_FORMAT_STRING_SHORT);
     }
@@ -58,8 +59,12 @@ export class TimesheetService {
     if (timesheet_copy.start !== undefined) {
       timesheet_copy.start = moment(timesheet_copy.start).format(DATE_FORMAT_STRING_LONG);
     }
-    console.log(timesheet_copy);
-    return timesheet;
+
+    if (timesheet_copy.end !== undefined) {
+      timesheet_copy.end = moment(timesheet_copy.end).format(DATE_FORMAT_STRING_LONG);
+    }
+
+    return timesheet_copy;
   }
 
   private extractData(res: Response): Timesheet[] {
