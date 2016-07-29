@@ -1,4 +1,17 @@
-import { Component, OnInit, Input, Output, OnChanges, OnDestroy, EventEmitter } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  OnChanges,
+  OnDestroy,
+  EventEmitter,
+  trigger,
+  state,
+  style,
+  transition,
+  animate
+} from '@angular/core';
 import { Timesheet } from '../shared';
 import { TimesheetEditComponent } from '../timesheet-edit';
 import { SecondsToHoursPipe } from '../shared';
@@ -8,7 +21,21 @@ import { SecondsToHoursPipe } from '../shared';
   templateUrl: './timesheet.component.html',
   styleUrls: ['./timesheet.component.scss'],
   pipes: [SecondsToHoursPipe],
-  directives: [TimesheetEditComponent]
+  directives: [TimesheetEditComponent],
+  animations: [
+      trigger('timesheetState', [
+          state('selected', style({
+              borderColor: '#ff0',
+              height: '300px'
+          })),
+          state('notselected', style({
+              borderColor: '#fff',
+              height: '100px'
+          })),
+          transition('notselected => selected', animate('250ms ease-in')),
+          transition('selected => notselected', animate('250ms ease-out'))
+      ])
+  ]
 })
 export class TimesheetComponent implements OnInit, OnChanges, OnDestroy {
 
