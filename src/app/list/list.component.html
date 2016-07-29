@@ -1,6 +1,6 @@
 <div>
   LIST
-  <div *ngFor="let timesheet of $timesheets | async" (click)="selectTimesheet(timesheet.id)" [attr.id]="TIMESHEET_ID_PREFIX+ '-' +timesheet.id" class="timesheet-list-timesheet-container" @timesheetState="(timesheet.id === selectedId ? 'selected' : 'notselected')">
+  <div *ngFor="let timesheet of timesheets;trackBy:timesheet?.id" (click)="selectTimesheet(timesheet.id)" [attr.id]="TIMESHEET_ID_PREFIX+ '-' +timesheet.id" class="timesheet-list-timesheet-container" @timesheetState="(timesheet.id === selectedId ? 'selected' : 'notselected')">
     <ts-timesheet
       [timesheet]="timesheet"
       [selected]="selectedId === timesheet.id" (saveTimesheet)="onSaveTimesheet(timesheet)"></ts-timesheet>

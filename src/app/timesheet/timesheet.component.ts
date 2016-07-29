@@ -10,7 +10,8 @@ import {
   state,
   style,
   transition,
-  animate
+  animate,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { Timesheet } from '../shared';
 import { TimesheetEditComponent } from '../timesheet-edit';
@@ -18,6 +19,7 @@ import { SecondsToHoursPipe } from '../shared';
 
 @Component({
   selector: 'ts-timesheet',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './timesheet.component.html',
   styleUrls: ['./timesheet.component.scss'],
   pipes: [SecondsToHoursPipe],
@@ -57,7 +59,7 @@ export class TimesheetComponent implements OnInit, OnChanges, OnDestroy {
 
   }
 
-  onSave(timesheet : Timesheet) {
+  onSave(timesheet: Timesheet) {
     this.saveTimesheet.emit(timesheet);
   }
 

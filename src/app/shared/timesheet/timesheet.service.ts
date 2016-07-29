@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { DATE_FORMAT_STRING_LONG, DATE_FORMAT_STRING_SHORT } from '../time-helpers';
-import * as moment from 'moment'
+import * as moment from 'moment';
 import * as _ from 'lodash';
 import { Store } from '@ngrx/store';
 
@@ -22,16 +22,19 @@ export class TimesheetService {
     return this.timesheetsUrl + '?start_date=2016-07-01&end_date=' + dayString;
   }
 
+  // fetch timesheets then update the store
   getTimesheets(): Observable<Timesheet[]> {
     let headers = new Headers();
     headers.set('Authorization', 'Bearer ' + process.env.ACCESS_TOKEN);
-    this._store.select('timesheets')
-      .subscribe(timesheets => {
-        console.log(timesheets);
-      });
-    return this.http.get(this.getTimesheetsListUrl(), { headers: headers })
+    let getRequest = this.http.get(this.getTimesheetsListUrl(), { headers: headers })
       .map(this.extractData)
       .catch(this.handleError);
+
+    getRequest.subscribe(timesheets => {
+      this._store.dispatch({type: 'SET_TIMESHEETS', payload: timesheets});
+    });
+
+    return getRequest;
   }
 
   editTimesheets(timesheets: Timesheet[]): Observable<Timesheet[]> {
@@ -39,13 +42,19 @@ export class TimesheetService {
     headers.set('Authorization', 'Bearer ' + process.env.ACCESS_TOKEN);
     let options = new RequestOptions({ headers: headers });
 
-    return this.http.put(this.timesheetsUrl, {
+    let putRequest = this.http.put(this.timesheetsUrl, {
         data: timesheets.map(this.timesheetToApiMapper)
-      }, 
-      options
-      )
+      }, options)
     .map(this.extractData)
     .catch(this.handleError);
+
+    putRequest.subscribe(new_timesheets => {
+      new_timesheets.map(timesheet => {
+        this._store.dispatch({ type: 'EDIT_TIMESHEET', payload: timesheet });
+      });
+    });
+
+    return putRequest;
   }
 // "2013-08-08T15:00:00-06:00"
   editTimesheet(timesheet: Timesheet): Observable<Timesheet[]> {
@@ -95,13 +104,29 @@ const initialState = {
 };
 
 export const timesheets = (state = initialState, action) => {
-  switch(action.type) {
+  let state_copy;
+  switch (action.type) {
+    case 'SET_TIMESHEETS':
+      state_copy = Object.assign({}, state);
+      state_copy.timesheets = action.payload;
+      return state_copy;
     case 'ADD_TIMESHEET':
-      var state_copy = Object.assign({}, state);
+      state_copy = Object.assign({}, state);
       state_copy.timesheets.push(action.payload);
       return state_copy;
     case 'EDIT_TIMESHEET':
-      return state;
+      state_copy = Object.assign({}, state);
+      let timesheet_id_to_edit = state_copy.timesheets.findIndex((timesheet) => {
+        if (timesheet.id === action.payload.id) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+      if (timesheet_id_to_edit > -1) {
+        state_copy.timesheets[timesheet_id_to_edit] = action.payload;
+      }
+      return state_copy;
     case 'DELETE_TIMESHEET':
       return state;
     default:
