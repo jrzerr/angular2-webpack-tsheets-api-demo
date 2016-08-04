@@ -1,48 +1,55 @@
-import { Component, OnInit, Input, OnChanges, OnDestroy, Pipe, PipeTransform } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  OnChanges,
+  OnDestroy,
+  EventEmitter,
+  trigger,
+  state,
+  style,
+  transition,
+  animate,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { Timesheet } from '../shared';
-
-@Pipe({ name: 'tsSecondsToHours'})
-export class SecondsToHoursPipe implements PipeTransform {
-  transform(sec_num: number): string {
-    const hours   = Math.floor(sec_num / 3600);
-    const minutes = Math.floor((sec_num - (hours * 3600)) / 60);
-    const seconds = sec_num - (hours * 3600) - (minutes * 60);
-
-    let hours_str = hours.toString();
-    let minutes_str = minutes.toString();
-    let seconds_str = seconds.toString();
-
-    if (hours   < 10) {
-      hours_str = '0' + hours;
-    }
-    if (minutes < 10) {
-      minutes_str = '0' + minutes;
-    }
-    if (seconds < 10) {
-      seconds_str = '0' + seconds;
-    }
-
-    return hours_str + ':' + minutes_str + ':' + seconds_str;
-  }
-}
+import { TimesheetEditComponent } from '../timesheet-edit';
+import { SecondsToHoursPipe } from '../shared';
 
 @Component({
   selector: 'ts-timesheet',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './timesheet.component.html',
   styleUrls: ['./timesheet.component.scss'],
   pipes: [SecondsToHoursPipe],
+  directives: [TimesheetEditComponent],
+  animations: [
+      trigger('timesheetState', [
+          state('selected', style({
+              borderColor: '#ff0',
+              height: '300px'
+          })),
+          state('notselected', style({
+              borderColor: '#fff',
+              height: '100px'
+          })),
+          transition('notselected => selected', animate('250ms ease-in')),
+          transition('selected => notselected', animate('250ms ease-out'))
+      ])
+  ]
 })
 export class TimesheetComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input() timesheet: Timesheet;
   @Input() selected: boolean;
+  @Output() saveTimesheet: EventEmitter<any> = new EventEmitter();
 
   constructor() {
     // Do stuff
   }
 
   ngOnInit() {
-    console.log('Hello Timesheet');
   }
 
   ngOnChanges() {
@@ -50,6 +57,10 @@ export class TimesheetComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnDestroy() {
 
+  }
+
+  onSave(timesheet: Timesheet) {
+    this.saveTimesheet.emit(timesheet);
   }
 
 }

@@ -1,0 +1,19 @@
+<div>
+  <div class="timesheet-component-time" [ngSwitch]="timesheet.type">
+    <div *ngSwitchCase="'regular'">
+      {{ timesheet.start }}
+      <span *ngIf="timesheet.on_the_clock === false">
+        {{ timesheet.end }}
+      </span>
+    </div>
+    <div *ngSwitchCase="'manual'">
+      {{ timesheet.duration | tsSecondsToHours }}
+    </div>
+    <div>
+      <textarea [(ngModel)]="timesheet.notes" cols="30" rows="10"></textarea>
+    </div>
+    <div>
+      <button (click)="onSave(timesheet)">Save</button>
+    </div>
+  </div>
+</div>

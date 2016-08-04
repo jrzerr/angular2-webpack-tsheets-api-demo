@@ -3,13 +3,21 @@
   width: 80%;
   background-color: white;
   border-radius: 5px;
+  border-style: solid;
+  border-color: #fff;
+  border-size: 15px;
   color: black;
   margin: auto;
   margin-top: 15px;
   text-align: left;
   padding: 8px 10px 8px 10px;
+  overflow: hidden;
 }
 
 .timesheet-component-title {
   line-height: 50px;
+}
+
+.timesheet-component-expanded {
+  height: 300px;
 }
