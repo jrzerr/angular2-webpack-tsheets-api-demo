@@ -3,18 +3,56 @@ import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { DATE_FORMAT_STRING_LONG, DATE_FORMAT_STRING_SHORT } from '../time-helpers';
 import * as moment from 'moment';
 import * as _ from 'lodash';
-import { Store } from '@ngrx/store';
+import { Store, Action, ActionReducer } from '@ngrx/store';
 
 import { Timesheet } from './timesheet';
 // import { TIMESHEETS } from './mock-timesheets';
 import { Observable } from 'rxjs/Observable';
 
+
+
+export interface AppStore {
+  timesheets: Timesheet[];
+}
+
+export const timesheetsReducer: ActionReducer<Timesheet[]> = (state: Timesheet[] = [], action: Action) => {
+  let state_copy: Timesheet[];
+  switch (action.type) {
+    case 'SET_TIMESHEETS':
+      return action.payload
+    case 'ADD_TIMESHEET':
+      return [
+        ...state,
+        action.payload
+      ]
+    case 'EDIT_TIMESHEET':
+      state_copy = [...state];
+      let timesheet_id_to_edit: number = state_copy.findIndex((timesheet) => {
+        if (timesheet.id === action.payload.id) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+      if (timesheet_id_to_edit > -1) {
+        state_copy[timesheet_id_to_edit] = action.payload;
+      }
+      return state_copy;
+    case 'DELETE_TIMESHEET':
+      return state;
+    default:
+      return state;
+  }
+};
+
 @Injectable()
 export class TimesheetService {
 
   private timesheetsUrl = process.env.API_URL + '/api/v1/timesheets';
-
-  constructor (private http: Http, private _store: Store<any>) {}
+  public timesheets: Observable<Array<Timesheet>>;
+  constructor (private http: Http, private _store: Store<AppStore>) {
+    this.timesheets = _store.select(state => state.timesheets);
+  }
   getTimesheetsListUrl(): string {
     const today = new Date();
     const dayString = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
@@ -97,39 +135,3 @@ export class TimesheetService {
     return Observable.throw(errMsg);
   }
 }
-
-
-const initialState = {
-  timesheets: []
-};
-
-export const timesheets = (state = initialState, action) => {
-  let state_copy;
-  switch (action.type) {
-    case 'SET_TIMESHEETS':
-      state_copy = Object.assign({}, state);
-      state_copy.timesheets = action.payload;
-      return state_copy;
-    case 'ADD_TIMESHEET':
-      state_copy = Object.assign({}, state);
-      state_copy.timesheets.push(action.payload);
-      return state_copy;
-    case 'EDIT_TIMESHEET':
-      state_copy = Object.assign({}, state);
-      let timesheet_id_to_edit = state_copy.timesheets.findIndex((timesheet) => {
-        if (timesheet.id === action.payload.id) {
-          return true;
-        } else {
-          return false;
-        }
-      });
-      if (timesheet_id_to_edit > -1) {
-        state_copy.timesheets[timesheet_id_to_edit] = action.payload;
-      }
-      return state_copy;
-    case 'DELETE_TIMESHEET':
-      return state;
-    default:
-      return state;
-  }
-};

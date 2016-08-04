@@ -5,7 +5,7 @@ import { disableDeprecatedForms, provideForms } from '@angular/forms';
 import { AppComponent } from './app/app.component';
 import { APP_ROUTER_PROVIDERS } from './app/app.routes';
 import { provideStore } from '@ngrx/store';
-import { timesheets } from './app/shared';
+import { timesheetsReducer } from './app/shared';
 // depending on the env mode, enable prod mode or add debugging modules
 if (process.env.ENV === 'build') {
   enableProdMode();
@@ -13,7 +13,7 @@ if (process.env.ENV === 'build') {
 
 bootstrap(AppComponent, [
     // These are dependencies of our App
-    provideStore({timesheets}),
+    provideStore({timesheets: timesheetsReducer}),
     HTTP_PROVIDERS,
     APP_ROUTER_PROVIDERS,
     disableDeprecatedForms(),
