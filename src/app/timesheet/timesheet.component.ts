@@ -43,6 +43,7 @@ export class TimesheetComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input() timesheet: Timesheet;
   @Input() selected: boolean;
+  @Input() loading: boolean;
   @Output() saveTimesheet: EventEmitter<any> = new EventEmitter();
 
   constructor() {

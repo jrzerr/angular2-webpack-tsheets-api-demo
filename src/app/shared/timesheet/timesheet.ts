@@ -1,5 +1,8 @@
+import { UUID } from 'angular2-uuid';
+
 export class Timesheet {
     id: number;
+    _id: string;
     user_id: number;
     jobcode_id: number;
     locked: boolean;
@@ -14,6 +17,7 @@ export class Timesheet {
     duration: number;
     constructor(ts: any = {
         id: 0,
+        _id: '',
         user_id: 0,
         jobcode_id: 0,
         locked: false,
@@ -28,6 +32,13 @@ export class Timesheet {
         duration: 0,
     }) {
         this.id = ts.id;
+
+        if (ts._id === '' || ts._id === undefined) {
+            this._id = UUID.UUID();
+        } else {
+            this._id = ts._id;
+        }
+
         this.user_id = ts.user_id;
         this.jobcode_id = ts.jobcode_id;
         this.locked = ts.locked;

@@ -1,4 +1,7 @@
 <div class="timesheet-component-container" @timesheetState="(selected === true ? 'selected' : 'notselected')">
+  <div *ngIf="loading === true">
+    LOADING
+  </div>
   <div class="timesheets-component-collapsed" [hidden]="selected === true">
     <div class="timesheet-component-title">{{ timesheet.id }}</div>
     <div class="timesheet-component-details">

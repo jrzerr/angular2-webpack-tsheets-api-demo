@@ -9,26 +9,25 @@ import { Timesheet } from './timesheet';
 // import { TIMESHEETS } from './mock-timesheets';
 import { Observable } from 'rxjs/Observable';
 
-
-
 export interface AppStore {
   timesheets: Timesheet[];
+  loadingIds: string[];
 }
 
 export const timesheetsReducer: ActionReducer<Timesheet[]> = (state: Timesheet[] = [], action: Action) => {
   let state_copy: Timesheet[];
   switch (action.type) {
     case 'SET_TIMESHEETS':
-      return action.payload
-    case 'ADD_TIMESHEET':
+      return action.payload;
+    case 'ADD_TIMESHEETS':
       return [
         ...state,
         action.payload
-      ]
+      ];
     case 'EDIT_TIMESHEET':
       state_copy = [...state];
       let timesheet_id_to_edit: number = state_copy.findIndex((timesheet) => {
-        if (timesheet.id === action.payload.id) {
+        if (timesheet._id === action.payload._id) {
           return true;
         } else {
           return false;
@@ -45,13 +44,31 @@ export const timesheetsReducer: ActionReducer<Timesheet[]> = (state: Timesheet[]
   }
 };
 
+export const loadingIdsReducer: ActionReducer<string[]> = (state: string[] = [], action: Action) => {
+  switch (action.type) {
+    case 'START_LOADING':
+      return [
+        ...state,
+        ...action.payload
+      ];
+    case 'FINISH_LOADING':
+      return state.filter((value) => {
+        return action.payload.indexOf(value) === -1;
+      });
+    default:
+      return state;
+  }
+}
+
 @Injectable()
 export class TimesheetService {
 
   private timesheetsUrl = process.env.API_URL + '/api/v1/timesheets';
-  public timesheets: Observable<Array<Timesheet>>;
+  public timesheets: Observable<Timesheet[]>;
+  public loadingIds: Observable<string[]>;
   constructor (private http: Http, private _store: Store<AppStore>) {
     this.timesheets = _store.select(state => state.timesheets);
+    this.loadingIds = _store.select(state => state.loadingIds);
   }
   getTimesheetsListUrl(): string {
     const today = new Date();
@@ -65,7 +82,7 @@ export class TimesheetService {
     let headers = new Headers();
     headers.set('Authorization', 'Bearer ' + process.env.ACCESS_TOKEN);
     let getRequest = this.http.get(this.getTimesheetsListUrl(), { headers: headers })
-      .map(this.extractData)
+      .map((response) => this.extractData(response, []))
       .catch(this.handleError);
 
     getRequest.subscribe(timesheets => {
@@ -75,21 +92,47 @@ export class TimesheetService {
     return getRequest;
   }
 
+  // send a POST request with the new timesheets and dispatch the ADD_TIMESHEET action
+  // return an observable with the timesheets
+  addTimesheets(timesheets: Timesheet[]): Observable<Timesheet[]> {
+    let headers = new Headers();
+    headers.set('Authorization', 'Bearer ' + process.env.ACCESS_TOKEN);
+    let options = new RequestOptions({ headers: headers });
+    const _ids: string[] = timesheets.map(timesheet => timesheet._id);
+
+    let postRequest = this.http.post(this.timesheetsUrl, {
+      data: timesheets.map(this.timesheetToApiMapper)
+    }, options)
+      .map((response) => this.extractData(response, _ids))
+      .catch(this.handleError);
+
+    postRequest.subscribe(timesheets_response => {
+        this._store.dispatch({ type: 'ADD_TIMESHEETS', payload: timesheets_response });
+    });
+    return postRequest;
+  }
+
+  addTimesheet(timesheet: Timesheet): Observable<Timesheet[]> {
+    return this.addTimesheets([timesheet]);
+  }
+
   editTimesheets(timesheets: Timesheet[]): Observable<Timesheet[]> {
     let headers = new Headers();
     headers.set('Authorization', 'Bearer ' + process.env.ACCESS_TOKEN);
     let options = new RequestOptions({ headers: headers });
-
+    const _ids: string[] = timesheets.map(timesheet => timesheet._id);
+    this._store.dispatch({ type: 'START_LOADING', payload: _ids });
     let putRequest = this.http.put(this.timesheetsUrl, {
-        data: timesheets.map(this.timesheetToApiMapper)
-      }, options)
-    .map(this.extractData)
-    .catch(this.handleError);
+      data: timesheets.map(this.timesheetToApiMapper)
+    }, options)
+      .map((response) => this.extractData(response, _ids))
+      .catch(this.handleError);
 
     putRequest.subscribe(new_timesheets => {
-      new_timesheets.map(timesheet => {
+      new_timesheets.forEach(timesheet => {
         this._store.dispatch({ type: 'EDIT_TIMESHEET', payload: timesheet });
       });
+      this._store.dispatch({ type: 'FINISH_LOADING', payload: _ids });
     });
 
     return putRequest;
@@ -100,28 +143,46 @@ export class TimesheetService {
   }
 
   timesheetToApiMapper(timesheet: Timesheet): any {
-    let timesheet_copy: any = _.pick(timesheet, ['id', 'date', 'start', 'end', 'jobcode_id', 'notes', 'customfields']);
+    let timesheet_copy: any;
 
-    if (timesheet_copy.date !== undefined) {
-      timesheet_copy.date = moment(timesheet_copy.date).format(DATE_FORMAT_STRING_SHORT);
-    }
+    if (timesheet.type === 'regular') {
+      timesheet_copy = _.pick(timesheet, ['id', 'start', 'end', 'jobcode_id', 'notes', 'customfields', 'type', 'user_id']);
+ 
+      if (timesheet_copy.start !== undefined) {
+        timesheet_copy.start = moment(timesheet_copy.start).format(DATE_FORMAT_STRING_LONG);
+      }
 
-    if (timesheet_copy.start !== undefined) {
-      timesheet_copy.start = moment(timesheet_copy.start).format(DATE_FORMAT_STRING_LONG);
-    }
+      if (timesheet_copy.end !== undefined) {
+        timesheet_copy.end = moment(timesheet_copy.end).format(DATE_FORMAT_STRING_LONG);
+      }
+    } else {
+      timesheet_copy = _.pick(timesheet, ['id', 'date', 'jobcode_id', 'notes', 'customfields', 'duration', 'type', 'user_id']);
 
-    if (timesheet_copy.end !== undefined) {
-      timesheet_copy.end = moment(timesheet_copy.end).format(DATE_FORMAT_STRING_LONG);
+      if (timesheet_copy.date !== undefined) {
+        timesheet_copy.date = moment(timesheet_copy.date).format(DATE_FORMAT_STRING_SHORT);
+      }
     }
 
     return timesheet_copy;
   }
 
-  private extractData(res: Response): Timesheet[] {
+  /**
+   * 
+   * 
+   * @private
+   * @param {Response} res
+   * @param {Array<string>} 
+   * [_ids=[]] local ids - list of local ids to map response to
+   * @returns {Timesheet[]}
+   */
+  private extractData(res: Response, _ids: Array<string> = []): Timesheet[] {
       let body = res.json();
-      let timesheets = Object.keys(body.results.timesheets).map(function(timesheetId) {
+      let timesheets = Object.keys(body.results.timesheets).map((timesheetId, index) => {
         return body.results.timesheets[timesheetId];
-      }).map(timesheet => {
+      }).map((timesheet, index) => {
+        if (index < _ids.length) {
+          timesheet._id = _ids[index];
+        }
         return new Timesheet(timesheet);
       });
 
