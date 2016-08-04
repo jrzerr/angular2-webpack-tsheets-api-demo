@@ -10,10 +10,14 @@
       {{ timesheet.duration | tsSecondsToHours }}
     </div>
     <div>
-      <textarea [(ngModel)]="timesheet.notes" cols="30" rows="10"></textarea>
+      <textarea 
+        [(ngModel)]="timesheet.notes" 
+        [disabled]="disabled === true" 
+        cols="30" 
+        rows="10"></textarea>
     </div>
     <div>
-      <button (click)="onSave(timesheet)">Save</button>
+      <button (click)="onSave(timesheet)" [disabled]="disabled === true">Save</button>
     </div>
   </div>
 </div>

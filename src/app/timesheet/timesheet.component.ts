@@ -61,7 +61,9 @@ export class TimesheetComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   onSave(timesheet: Timesheet) {
-    this.saveTimesheet.emit(timesheet);
+    if (this.loading === false) {
+      this.saveTimesheet.emit(timesheet);
+    }
   }
 
 }

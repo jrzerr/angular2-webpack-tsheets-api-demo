@@ -11,6 +11,7 @@ import { SecondsToHoursPipe } from '../shared';
 export class TimesheetEditComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input() timesheet: Timesheet;
+  @Input() disabled: boolean;
   @Output() saveTimesheet: EventEmitter<any> = new EventEmitter();
   constructor() {
     // Do stuff

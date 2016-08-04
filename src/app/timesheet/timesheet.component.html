@@ -1,6 +1,6 @@
 <div class="timesheet-component-container" @timesheetState="(selected === true ? 'selected' : 'notselected')">
   <div *ngIf="loading === true">
-    LOADING
+    <img src="/img/loader.gif" alt="">
   </div>
   <div class="timesheets-component-collapsed" [hidden]="selected === true">
     <div class="timesheet-component-title">{{ timesheet.id }}</div>
@@ -19,6 +19,10 @@
     </div>
   </div>
   <div class="timesheet-component-expanded" [hidden]="selected === false">
-    <ts-timesheet-edit [timesheet]="timesheet" (saveTimesheet)="onSave(timesheet)"></ts-timesheet-edit>
+    <ts-timesheet-edit 
+      [timesheet]="timesheet" 
+      (saveTimesheet)="onSave(timesheet)"
+      [disabled]="loading === true">
+    </ts-timesheet-edit>
   </div>
 </div>
