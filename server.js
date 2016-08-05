@@ -7,4 +7,4 @@ var TSHEETS_URL = 'https://rest.tsheets.com/';
 
 app.use(serveStatic(__dirname + '/dist'));
 app.use('/tsheets', proxy(TSHEETS_URL));
-app.listen(80);
+app.listen(3000);
