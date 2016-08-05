@@ -34,7 +34,7 @@ export const timesheetsReducer: ActionReducer<Timesheet[]> = (state: Timesheet[]
       });
       console.log(state[timesheet_id_to_edit]);
       if (timesheet_id_to_edit > -1) {
-        state_copy[timesheet_id_to_edit] = Object.assign(new Timesheet(), state_copy[timesheet_id_to_edit], action.payload);
+        state_copy[timesheet_id_to_edit] = _.merge(new Timesheet(), state_copy[timesheet_id_to_edit], action.payload);
       }
       console.log(state_copy[timesheet_id_to_edit]);
       return state_copy;
@@ -105,7 +105,7 @@ export class TimesheetService {
     headers.set('Authorization', 'Bearer ' + process.env.ACCESS_TOKEN);
     let options = new RequestOptions({ headers: headers });
     const _ids: string[] = timesheets.map(timesheet => {
-      this._store.dispatch({ type: 'EDIT_TIMESHEET', payload: Object.assign({}, timesheet, { loading: true }) });
+      this._store.dispatch({ type: 'EDIT_TIMESHEET', payload: { _id: timesheet._id, loading: true } });
       return timesheet._id;
     });
 
