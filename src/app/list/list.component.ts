@@ -7,14 +7,12 @@ import {
   state,
   style,
   transition,
-  animate,
-  ChangeDetectionStrategy
+  animate
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { TimesheetService, Timesheet } from '../shared';
 import { TimesheetComponent } from  '../timesheet';
-import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'ts-list',
@@ -45,10 +43,8 @@ import { Store } from '@ngrx/store';
 export class ListComponent implements OnInit, OnDestroy {
 
   private paramsSub: Subscription;
-  private $editTimesheets: Observable<Timesheet[]>;
-  private editSub: Subscription;
   public timesheets: Timesheet[];
-  private timesheetsSub: Subscription;
+  public $timesheets: Observable<Timesheet[]>;
   public errorMessage: any;
   public selectedId: number;
   public TIMESHEET_ID_PREFIX: string;
@@ -56,8 +52,7 @@ export class ListComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private timesheetService: TimesheetService,
-    private elementRef: ElementRef,
-    private _store: Store<any>) {
+    private elementRef: ElementRef) {
     // Do stuff
     this.TIMESHEET_ID_PREFIX = 'timesheet-view';
   }
@@ -74,26 +69,30 @@ export class ListComponent implements OnInit, OnDestroy {
     });
 
     this.route.params.subscribe(params => {
-      console.log(params);
+      // console.log(params);
     });
-
-    // this should probably be done elsewhere in the app
-    this.timesheetService.getTimesheets();
-
-    this.timesheetsSub = this._store.select('timesheets')
-      .subscribe(timesheetsStore => {
-        this.timesheets = timesheetsStore['timesheets'].sort((a, b) => {
+    this.timesheetService.timesheets
+      .map(timesheets => {
+        return timesheets.sort((a, b) => {
           return b.date.getTime() - a.date.getTime();
         });
+      })
+      .subscribe(timesheets => {
+        this.timesheets = [...timesheets];
       });
+    // this should probably be done elsewhere in the app
+    this.timesheetService.getTimesheets();
   }
 
   ngOnDestroy() {
     this.paramsSub.unsubscribe();
-    this.timesheetsSub.unsubscribe();
   }
 
   onSaveTimesheet(timesheet: Timesheet) {
     this.timesheetService.editTimesheet(timesheet);
+  }
+
+  trackById(index: number, timesheet: Timesheet) {
+    return timesheet._id;
   }
 }

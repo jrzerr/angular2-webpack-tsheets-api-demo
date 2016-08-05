@@ -11,6 +11,7 @@ import { SecondsToHoursPipe } from '../shared';
 export class TimesheetEditComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input() timesheet: Timesheet;
+  @Input() disabled: boolean;
   @Output() saveTimesheet: EventEmitter<any> = new EventEmitter();
   constructor() {
     // Do stuff
@@ -23,11 +24,12 @@ export class TimesheetEditComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnDestroy() {
-
   }
 
   onSave(timesheet) {
-    this.saveTimesheet.emit(timesheet);
+    if (this.disabled === false) {
+      this.saveTimesheet.emit(timesheet);
+    }
   }
 
 }

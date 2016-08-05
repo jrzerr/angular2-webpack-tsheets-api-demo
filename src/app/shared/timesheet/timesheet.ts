@@ -1,8 +1,12 @@
+import { UUID } from 'angular2-uuid';
+
 export class Timesheet {
     id: number;
+    _id: string;
     user_id: number;
     jobcode_id: number;
     locked: boolean;
+    loading: boolean;
     notes: string;
     created: Date;
     last_modified: Date;
@@ -12,11 +16,19 @@ export class Timesheet {
     end: Date;
     date: Date;
     duration: number;
+
+    isLoading: () => boolean = () => {
+        console.log(this.loading);
+        return this.loading;
+    };
+
     constructor(ts: any = {
         id: 0,
+        _id: '',
         user_id: 0,
         jobcode_id: 0,
         locked: false,
+        loading: false,
         notes: '',
         created: '',
         last_modified: '',
@@ -28,9 +40,21 @@ export class Timesheet {
         duration: 0,
     }) {
         this.id = ts.id;
+
+        if (ts._id === '' || ts._id === undefined) {
+            this._id = UUID.UUID();
+        } else {
+            this._id = ts._id;
+        }
+
         this.user_id = ts.user_id;
         this.jobcode_id = ts.jobcode_id;
         this.locked = ts.locked;
+        if (ts.loading === undefined) {
+            this.loading = false;
+        } else {
+            this.loading = ts.loading;
+        }
         this.notes = ts.notes;
 
         if (ts.created) {
