@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, OnChanges, OnDestroy, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, OnChanges, OnDestroy, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { Timesheet } from '../shared';
 import { SecondsToHoursPipe } from '../shared';
 
@@ -6,6 +6,7 @@ import { SecondsToHoursPipe } from '../shared';
   selector: 'ts-timesheet-edit',
   templateUrl: './timesheet-edit.component.html',
   styleUrls: ['./timesheet-edit.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   pipes: [SecondsToHoursPipe],
 })
 export class TimesheetEditComponent implements OnInit, OnChanges, OnDestroy {
