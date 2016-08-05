@@ -1,4 +1,5 @@
 <div>
+  {{ disabled }}
   <div class="timesheet-component-time" [ngSwitch]="timesheet.type">
     <div *ngSwitchCase="'regular'">
       {{ timesheet.start }}
@@ -11,7 +12,7 @@
     </div>
     <div>
       <textarea 
-        [(ngModel)]="timesheet.notes" 
+        [(ngModel)]="timesheet.notes"
         [disabled]="disabled === true" 
         cols="30" 
         rows="10"></textarea>

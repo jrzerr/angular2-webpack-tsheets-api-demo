@@ -43,11 +43,8 @@ import { TimesheetComponent } from  '../timesheet';
 export class ListComponent implements OnInit, OnDestroy {
 
   private paramsSub: Subscription;
-  private $editTimesheets: Observable<Timesheet[]>;
-  private editSub: Subscription;
   public timesheets: Timesheet[];
   public $timesheets: Observable<Timesheet[]>;
-  public loadingIds: string[];
   public errorMessage: any;
   public selectedId: number;
   public TIMESHEET_ID_PREFIX: string;
@@ -83,12 +80,6 @@ export class ListComponent implements OnInit, OnDestroy {
       .subscribe(timesheets => {
         this.timesheets = [...timesheets];
       });
-
-    this.timesheetService.loadingIds
-      .subscribe(ids => {
-        console.log(ids);
-        this.loadingIds = ids;
-      });
     // this should probably be done elsewhere in the app
     this.timesheetService.getTimesheets();
   }
@@ -101,7 +92,7 @@ export class ListComponent implements OnInit, OnDestroy {
     this.timesheetService.editTimesheet(timesheet);
   }
 
-  isLoading(timesheet: Timesheet) {
-    return this.loadingIds.indexOf(timesheet._id) !== -1;
+  trackById(index: number, timesheet: Timesheet) {
+    return timesheet._id;
   }
 }

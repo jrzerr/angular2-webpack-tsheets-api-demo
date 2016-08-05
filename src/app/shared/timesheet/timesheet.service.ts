@@ -11,7 +11,6 @@ import { Observable } from 'rxjs/Observable';
 
 export interface AppStore {
   timesheets: Timesheet[];
-  loadingIds: string[];
 }
 
 export const timesheetsReducer: ActionReducer<Timesheet[]> = (state: Timesheet[] = [], action: Action) => {
@@ -34,7 +33,7 @@ export const timesheetsReducer: ActionReducer<Timesheet[]> = (state: Timesheet[]
         }
       });
       if (timesheet_id_to_edit > -1) {
-        state_copy[timesheet_id_to_edit] = action.payload;
+        state_copy[timesheet_id_to_edit] = Object.assign(new Timesheet(), state_copy[timesheet_id_to_edit], action.payload);
       }
       return state_copy;
     case 'DELETE_TIMESHEET':
@@ -44,22 +43,6 @@ export const timesheetsReducer: ActionReducer<Timesheet[]> = (state: Timesheet[]
   }
 };
 
-export const loadingIdsReducer: ActionReducer<string[]> = (state: string[] = [], action: Action) => {
-  switch (action.type) {
-    case 'START_LOADING':
-      return [
-        ...state,
-        ...action.payload
-      ];
-    case 'FINISH_LOADING':
-      return state.filter((value) => {
-        return action.payload.indexOf(value) === -1;
-      });
-    default:
-      return state;
-  }
-}
-
 @Injectable()
 export class TimesheetService {
 
@@ -68,7 +51,6 @@ export class TimesheetService {
   public loadingIds: Observable<string[]>;
   constructor (private http: Http, private _store: Store<AppStore>) {
     this.timesheets = _store.select(state => state.timesheets);
-    this.loadingIds = _store.select(state => state.loadingIds);
   }
   getTimesheetsListUrl(): string {
     const today = new Date();
@@ -120,8 +102,11 @@ export class TimesheetService {
     let headers = new Headers();
     headers.set('Authorization', 'Bearer ' + process.env.ACCESS_TOKEN);
     let options = new RequestOptions({ headers: headers });
-    const _ids: string[] = timesheets.map(timesheet => timesheet._id);
-    this._store.dispatch({ type: 'START_LOADING', payload: _ids });
+    const _ids: string[] = timesheets.map(timesheet => {
+      this._store.dispatch({ type: 'EDIT_TIMESHEET', payload: Object.assign({}, timesheet, { loading: true }) });
+      return timesheet._id;
+    });
+
     let putRequest = this.http.put(this.timesheetsUrl, {
       data: timesheets.map(this.timesheetToApiMapper)
     }, options)
@@ -132,7 +117,6 @@ export class TimesheetService {
       new_timesheets.forEach(timesheet => {
         this._store.dispatch({ type: 'EDIT_TIMESHEET', payload: timesheet });
       });
-      this._store.dispatch({ type: 'FINISH_LOADING', payload: _ids });
     });
 
     return putRequest;
@@ -147,7 +131,7 @@ export class TimesheetService {
 
     if (timesheet.type === 'regular') {
       timesheet_copy = _.pick(timesheet, ['id', 'start', 'end', 'jobcode_id', 'notes', 'customfields', 'type', 'user_id']);
- 
+
       if (timesheet_copy.start !== undefined) {
         timesheet_copy.start = moment(timesheet_copy.start).format(DATE_FORMAT_STRING_LONG);
       }
@@ -183,6 +167,7 @@ export class TimesheetService {
         if (index < _ids.length) {
           timesheet._id = _ids[index];
         }
+        timesheet.loading = false;
         return new Timesheet(timesheet);
       });
 

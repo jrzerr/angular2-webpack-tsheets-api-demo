@@ -24,11 +24,12 @@ export class TimesheetEditComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnDestroy() {
-
   }
 
   onSave(timesheet) {
-    this.saveTimesheet.emit(timesheet);
+    if (this.disabled === false) {
+      this.saveTimesheet.emit(timesheet);
+    }
   }
 
 }

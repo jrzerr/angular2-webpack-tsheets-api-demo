@@ -43,7 +43,6 @@ export class TimesheetComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input() timesheet: Timesheet;
   @Input() selected: boolean;
-  @Input() loading: boolean;
   @Output() saveTimesheet: EventEmitter<any> = new EventEmitter();
 
   constructor() {
@@ -61,9 +60,7 @@ export class TimesheetComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   onSave(timesheet: Timesheet) {
-    if (this.loading === false) {
-      this.saveTimesheet.emit(timesheet);
-    }
+    this.saveTimesheet.emit(timesheet);
   }
 
 }

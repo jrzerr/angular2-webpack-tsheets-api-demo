@@ -22,7 +22,7 @@
     <ts-timesheet-edit 
       [timesheet]="timesheet" 
       (saveTimesheet)="onSave(timesheet)"
-      [disabled]="loading === true">
+      [disabled]="timesheet.loading === true">
     </ts-timesheet-edit>
   </div>
 </div>
