@@ -20,6 +20,7 @@
     "ci": "npm run e2e && npm run test",
     "docs": "typedoc --options typedoc.json src/app/app.component.ts",
     "start": "npm run server",
+    "postinstall": "npm run webdriver-update && typings install",
     "serve": "node ./server.js"
   },
   "dependencies": {
