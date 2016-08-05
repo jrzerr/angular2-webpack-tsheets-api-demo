@@ -3,7 +3,6 @@ var path = require('path');
 var webpack = require('webpack');
 
 // Webpack Plugins
-var CommonsChunkPlugin = webpack.optimize.CommonsChunkPlugin;
 var autoprefixer = require('autoprefixer');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
@@ -56,8 +55,7 @@ module.exports = function makeWebpackConfig() {
   config.output = isTest ? {} : {
     path: root('dist'),
     publicPath: isProd ? '/' : 'http://localhost:3000/',
-    filename: isProd ? 'js/[name].[hash].js' : 'js/[name].js',
-    chunkFilename: isProd ? '[id].[hash].chunk.js' : '[id].chunk.js'
+    filename: 'js/[name].js'
   };
 
   /**
@@ -166,18 +164,10 @@ module.exports = function makeWebpackConfig() {
 
   if (!isTest) {
     config.plugins.push(
-      // Generate common chunks if necessary
-      // Reference: https://webpack.github.io/docs/code-splitting.html
-      // Reference: https://webpack.github.io/docs/list-of-plugins.html#commonschunkplugin
-      new CommonsChunkPlugin({
-        name: ['vendor', 'polyfills']
-      }),
-
       // Inject script and link tags into html files
       // Reference: https://github.com/ampedandwired/html-webpack-plugin
       new HtmlWebpackPlugin({
-        template: './src/public/index.html',
-        chunksSortMode: 'dependency'
+        template: './src/public/index.html'
       }),
 
       // Extract css files
