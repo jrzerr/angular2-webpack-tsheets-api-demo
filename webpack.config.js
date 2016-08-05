@@ -7,12 +7,7 @@ var autoprefixer = require('autoprefixer');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
-
-try {
-  require('dotenv').config();
-} catch (e) {
-  
-}
+require('dotenv').config();
 /**
  * Env
  * Get npm lifecycle event to identify the environment
