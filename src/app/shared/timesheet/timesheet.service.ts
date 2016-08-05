@@ -32,11 +32,9 @@ export const timesheetsReducer: ActionReducer<Timesheet[]> = (state: Timesheet[]
           return false;
         }
       });
-      console.log(state[timesheet_id_to_edit]);
       if (timesheet_id_to_edit > -1) {
         state_copy[timesheet_id_to_edit] = _.merge(new Timesheet(), state_copy[timesheet_id_to_edit], action.payload);
       }
-      console.log(state_copy[timesheet_id_to_edit]);
       return state_copy;
     case 'DELETE_TIMESHEET':
       return state;

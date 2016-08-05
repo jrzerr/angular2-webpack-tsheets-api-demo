@@ -6,6 +6,7 @@ import { AppComponent } from './app/app.component';
 import { APP_ROUTER_PROVIDERS } from './app/app.routes';
 import { provideStore } from '@ngrx/store';
 import { timesheetsReducer } from './app/shared';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 // depending on the env mode, enable prod mode or add debugging modules
 if (process.env.ENV === 'build') {
   enableProdMode();
@@ -18,6 +19,7 @@ bootstrap(AppComponent, [
     }),
     HTTP_PROVIDERS,
     APP_ROUTER_PROVIDERS,
+    { provide: LocationStrategy, useClass: HashLocationStrategy },
     disableDeprecatedForms(),
     provideForms(),
   ])
