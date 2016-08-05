@@ -9,9 +9,9 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 try {
-  require('dotenv').config({silent: true});
+  require('dotenv').config();
 } catch (e) {
-
+  
 }
 /**
  * Env
