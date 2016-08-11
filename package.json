@@ -34,6 +34,7 @@
     "@angular/router": "3.0.0-beta.2",
     "@ngrx/core": "^1.0.1",
     "@ngrx/store": "^2.0.1",
+    "@types/lodash": "^4.14.30",
     "angular2-uuid": "^1.0.7",
     "connect": "^3.4.1",
     "dotenv": "^2.0.0",

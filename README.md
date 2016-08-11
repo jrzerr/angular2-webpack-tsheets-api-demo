@@ -49,6 +49,7 @@ $ cd my-app
 
 # use the proper version of nodejs
 $ nvm install
+$ typings install lodash --save
 
 # install the dependencies with npm
 $ npm install
