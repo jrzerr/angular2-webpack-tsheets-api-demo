@@ -18,10 +18,6 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     console.log('Hello Home');
-    this.timesheetService.getTimesheets()
-        .subscribe(
-        timesheets => this.timesheets = timesheets,
-        error => this.errorMessage = <any>error);
   }
 
 }

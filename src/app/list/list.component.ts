@@ -22,7 +22,7 @@ import { TimesheetComponent } from  '../timesheet';
   styleUrls: ['./list.component.scss'],
   providers: [],
   directives: [TimesheetComponent],
-  //changeDetection: ChangeDetectionStrategy.OnPush,
+  // changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('timesheetState', [
       state('*', style({

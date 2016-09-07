@@ -4,6 +4,7 @@ import { DATE_FORMAT_STRING_LONG, DATE_FORMAT_STRING_SHORT } from '../time-helpe
 import * as moment from 'moment';
 import * as _ from 'lodash';
 import { Store, Action, ActionReducer } from '@ngrx/store';
+import { Subscription } from 'rxjs/Subscription';
 
 import { Timesheet } from './timesheet';
 // import { TIMESHEETS } from './mock-timesheets';
@@ -59,19 +60,21 @@ export class TimesheetService {
     return this.timesheetsUrl + '?start_date=2016-07-01&end_date=' + dayString;
   }
 
-  // fetch timesheets then update the store
-  getTimesheets(): Observable<Timesheet[]> {
+  getHeaders() {
     let headers = new Headers();
     headers.set('Authorization', 'Bearer ' + process.env.ACCESS_TOKEN);
-    let getRequest = this.http.get(this.getTimesheetsListUrl(), { headers: headers })
+    return headers;
+  }
+
+  // fetch timesheets then update the store
+  getTimesheets(): Subscription {
+    let getRequest = this.http.get(this.getTimesheetsListUrl(), { headers: this.getHeaders() })
       .map((response) => this.extractData(response, []))
       .catch(this.handleError);
 
-    getRequest.subscribe(timesheets => {
+    return getRequest.subscribe(timesheets => {
       this._store.dispatch({type: 'SET_TIMESHEETS', payload: timesheets});
     });
-
-    return getRequest;
   }
 
   // send a POST request with the new timesheets and dispatch the ADD_TIMESHEET action

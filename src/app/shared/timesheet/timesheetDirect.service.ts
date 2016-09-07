@@ -21,15 +21,17 @@ export class TimesheetDirectService {
     return this.timesheetsUrl + '?start_date=2016-07-01&end_date=' + dayString;
   }
 
-  // fetch timesheets then update the store
-  getTimesheets(): Observable<Timesheet[]> {
+  getHeaders() {
     let headers = new Headers();
     headers.set('Authorization', 'Bearer ' + process.env.ACCESS_TOKEN);
-    let getRequest = this.http.get(this.getTimesheetsListUrl(), { headers: headers })
+    return headers;
+  }
+
+  // fetch timesheets then update the store
+  getTimesheets(): Observable<Timesheet[]> {
+    return this.http.get(this.getTimesheetsListUrl(), { headers: this.getHeaders() })
       .map((response) => this.extractData(response, []))
       .catch(this.handleError);
-
-    return getRequest;
   }
 
   // send a POST request with the new timesheets and dispatch the ADD_TIMESHEET action

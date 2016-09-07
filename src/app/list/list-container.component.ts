@@ -54,7 +54,7 @@ export class ListContainerComponent implements OnInit, OnDestroy {
     //     });
     //   });
     // this kicks off the initial request to populate the store
-    //this.timesheetService.getTimesheets();
+    // this.timesheetService.getTimesheets();
 
     // if we were using regular Observables, we would pass that
     // observable instead
