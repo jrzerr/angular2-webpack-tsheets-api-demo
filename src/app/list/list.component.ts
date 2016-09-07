@@ -22,22 +22,13 @@ import { TimesheetComponent } from  '../timesheet';
   styleUrls: ['./list.component.scss'],
   providers: [],
   directives: [TimesheetComponent],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  //changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('timesheetState', [
-      // state('selected', style({
-      //   borderColor: '#ff0'
-      // })),
-      // state('notselected', style({
-      //   borderColor: '#fff'
-      // })),
       state('*', style({
         opacity: '1'
       })),
-      // transition('notselected => selected', animate('500ms ease-in')),
-      // transition('selected => notselected', animate('500ms ease-out')),
       transition('void => *', [
-        // style({ opacity: '0' }),
         animate('500ms ease-in', style({ opacity: '1' }))
         ]),
     ])
