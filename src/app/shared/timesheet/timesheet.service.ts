@@ -48,11 +48,13 @@ export const timesheetsReducer: ActionReducer<Timesheet[]> = (state: Timesheet[]
 export class TimesheetService {
 
   private timesheetsUrl = process.env.API_URL + '/api/v1/timesheets';
-  public timesheets: Observable<Timesheet[]>;
+  public timesheets$: Observable<Timesheet[]>;
   public loadingIds: Observable<string[]>;
+
   constructor (private http: Http, private _store: Store<AppStore>) {
-    this.timesheets = _store.select(state => state.timesheets);
+    this.timesheets$ = _store.select(state => state.timesheets);
   }
+
   getTimesheetsListUrl(): string {
     const today = new Date();
     const dayString = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
@@ -73,7 +75,9 @@ export class TimesheetService {
       .catch(this.handleError);
 
     return getRequest.subscribe(timesheets => {
+
       this._store.dispatch({type: 'SET_TIMESHEETS', payload: timesheets});
+      
     });
   }
 

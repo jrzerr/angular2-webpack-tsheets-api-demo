@@ -37,10 +37,12 @@ import { TimesheetComponent } from  '../timesheet';
 export class ListComponent implements OnInit, OnDestroy {
 
   public TIMESHEET_ID_PREFIX: string;
+  
   @Input() timesheets: Timesheet[];
   @Input() selectedId: number;
   @Output() onSelectTimesheet: EventEmitter<any> = new EventEmitter();
   @Output() onSaveTimesheet: EventEmitter<any> = new EventEmitter();
+
   constructor() {
     // Do stuff
     this.TIMESHEET_ID_PREFIX = 'timesheet-view';

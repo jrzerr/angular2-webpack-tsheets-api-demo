@@ -45,17 +45,6 @@ export class ListContainerComponent implements OnInit, OnDestroy {
       }
     });
 
-    // save the store observable and pass to component
-    // using the async pipe
-    // this.timesheets$ = this.timesheetService.timesheets
-    //   .map(timesheets => {
-    //     return timesheets.sort((a, b) => {
-    //       return b.date.getTime() - a.date.getTime();
-    //     });
-    //   });
-    // this kicks off the initial request to populate the store
-    // this.timesheetService.getTimesheets();
-
     // if we were using regular Observables, we would pass that
     // observable instead
     this.timesheets$ = this.timesheetDirectService.getTimesheets()
@@ -64,6 +53,18 @@ export class ListContainerComponent implements OnInit, OnDestroy {
           return b.date.getTime() - a.date.getTime();
         });
       });
+
+    // save the store observable and pass to component
+    // using the async pipe
+    this.timesheets$ = this.timesheetService.timesheets$
+      .map(timesheets => {
+        return timesheets.sort((a, b) => {
+          return b.date.getTime() - a.date.getTime();
+        });
+      });
+    // this kicks off the initial request to populate the store
+    this.timesheetService.getTimesheets();
+
 
   }
 
