@@ -27,7 +27,7 @@ export class TimesheetDirectService {
     return headers;
   }
 
-  // fetch timesheets then update the store
+  // return an Observable to timesheets HTTP request
   getTimesheets(): Observable<Timesheet[]> {
     return this.http.get(this.getTimesheetsListUrl(), { headers: this.getHeaders() })
       .map((response) => this.extractData(response, []))
